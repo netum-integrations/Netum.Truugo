@@ -42,43 +42,42 @@ public static class Truugo
                 case EndpointPath.CheckSyntax:
                     apiUrl = serverUrl + "/edifact/check-syntax";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
                         method: HttpMethod.Post,
                         filePath: input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.Content);
+                        fileContents: input.Content,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.ToXML:
                     apiUrl = serverUrl + "/edifact/to-xml";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
                         method: HttpMethod.Post,
                         filePath: input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.Content);
+                        fileContents: input.Content,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.ToJSON:
                     apiUrl = serverUrl + "/edifact/to-json";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
                         method: HttpMethod.Post,
                         filePath: input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.Content);
+                        fileContents: input.Content,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.GetBrowser:
                     apiUrl = serverUrl + "/edifact/get-browser";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -86,31 +85,32 @@ public static class Truugo
                         storageTime: input.StorageTime,
                         filePath: input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.Content);
+                        fileContents: input.Content,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.GetDocumentedSample:
                     apiUrl = serverUrl + "/edifact/get-documented-sample";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
                         method: HttpMethod.Post,
                         filePath: input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.Content);
+                        fileContents: input.Content,
+                        cancellationToken: cancellationToken);
 
                 default:
                     apiUrl = serverUrl + "/edifact/check-syntax";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
                         method: HttpMethod.Post,
                         filePath: input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.Content);
+                        fileContents: input.Content,
+                        cancellationToken: cancellationToken);
             }
         }
         catch (Exception ex)
@@ -120,7 +120,6 @@ public static class Truugo
     }
 
     private static async Task<Result> HandleRequest(
-        CancellationToken cancellationToken,
         string url,
         string username,
         string password,
@@ -128,7 +127,8 @@ public static class Truugo
         int storageTime = 24,
         string filePath = null,
         string fileName = null,
-        string fileContents = null)
+        string fileContents = null,
+        CancellationToken cancellationToken = default)
     {
         try
         {

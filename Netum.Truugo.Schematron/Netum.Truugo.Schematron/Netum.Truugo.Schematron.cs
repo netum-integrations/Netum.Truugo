@@ -40,25 +40,24 @@ public static class Truugo
                 case EndpointPath.ListItems:
                     apiUrl = serverUrl + $"/schematron/list-items?group_key={input.GroupKey}";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
-                        method: HttpMethod.Get);
+                        method: HttpMethod.Get,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.ListItemVersions:
                     apiUrl = serverUrl + $"/schematron/list-item-versions?item_key={input.ItemKey}";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
-                        method: HttpMethod.Get);
+                        method: HttpMethod.Get,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.Validate:
                     apiUrl = serverUrl + "/schematron/validate";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -66,16 +65,17 @@ public static class Truugo
                         fileKey: input.FileKey,
                         filePath: input.FileImportType == FileImport.FilePath ? input.FilePath : null,
                         fileName: input.FileName,
-                        fileContents: input.FileImportType == FileImport.FileContent ? input.Content : null);
+                        fileContents: input.FileImportType == FileImport.FileContent ? input.Content : null,
+                        cancellationToken: cancellationToken);
 
                 default:
                     apiUrl = serverUrl + $"/schematron/list-items?group_key={input.GroupKey}";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
-                        method: HttpMethod.Get);
+                        method: HttpMethod.Get,
+                        cancellationToken: cancellationToken);
             }
         }
         catch (Exception ex)
@@ -85,7 +85,6 @@ public static class Truugo
     }
 
     private static async Task<Result> HandleRequest(
-        CancellationToken cancellationToken,
         string url,
         string username,
         string password,
@@ -93,7 +92,8 @@ public static class Truugo
         string fileKey = null,
         string filePath = null,
         string fileName = null,
-        string fileContents = null)
+        string fileContents = null,
+        CancellationToken cancellationToken = default)
     {
         try
         {

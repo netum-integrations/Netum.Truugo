@@ -42,7 +42,6 @@ public static class Truugo
                 case EndpointPath.GetStatus:
                     apiUrl = serverUrl + "/validator/get-status";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -50,12 +49,12 @@ public static class Truugo
                         key: connection.ProfileKey,
                         filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content);
+                        fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreStatus30d:
                     apiUrl = serverUrl + "/validator/store-status-30-d";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -65,12 +64,12 @@ public static class Truugo
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
                         instance_name: input.InstanceName,
-                        tag: input.Tag);
+                        tag: input.Tag,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreStatus60d:
                     apiUrl = serverUrl + "/validator/store-status-60-d";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -80,12 +79,12 @@ public static class Truugo
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
                         instance_name: input.InstanceName,
-                        tag: input.Tag);
+                        tag: input.Tag,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.GetFeedback:
                     apiUrl = serverUrl + "/validator/get-feedback";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -95,12 +94,12 @@ public static class Truugo
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
                         instance_name: input.InstanceName,
-                        errors_only: input.ErrorsOnly);
+                        errors_only: input.ErrorsOnly,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.GetReport:
                     apiUrl = serverUrl + "/validator/get-report";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -111,12 +110,12 @@ public static class Truugo
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
                         instance_name: input.InstanceName,
-                        tag: input.Tag);
+                        tag: input.Tag,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreReport7d:
                     apiUrl = serverUrl + "/validator/store-report-7-d";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -126,12 +125,12 @@ public static class Truugo
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
                         instance_name: input.InstanceName,
-                        tag: input.Tag);
+                        tag: input.Tag,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreReport14d:
                     apiUrl = serverUrl + "/validator/store-report-14-d";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -141,12 +140,12 @@ public static class Truugo
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
                         instance_name: input.InstanceName,
-                        tag: input.Tag);
+                        tag: input.Tag,
+                        cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreReport30d:
                     apiUrl = serverUrl + "/validator/store-report-30-d";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -156,12 +155,12 @@ public static class Truugo
                         fileName: input.FileName,
                         fileContents: input.Content,
                         instance_name: input.InstanceName,
-                        tag: input.Tag);
+                        tag: input.Tag,
+                        cancellationToken: cancellationToken);
 
                 default:
                     apiUrl = serverUrl + "/validator/get-status";
                     return await HandleRequest(
-                        cancellationToken: cancellationToken,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -169,7 +168,8 @@ public static class Truugo
                         key: connection.ProfileKey,
                         filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content);
+                        fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
+                        cancellationToken: cancellationToken);
             }
         }
         catch (Exception ex)
@@ -179,7 +179,6 @@ public static class Truugo
     }
 
     private static async Task<Result> HandleRequest(
-        CancellationToken cancellationToken,
         string url,
         string username,
         string password,
@@ -191,7 +190,8 @@ public static class Truugo
         string fileContents = null,
         string instance_name = null,
         string tag = null,
-        bool errors_only = false)
+        bool errors_only = false,
+        CancellationToken cancellationToken = default)
     {
         try
         {
