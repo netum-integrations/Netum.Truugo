@@ -253,7 +253,7 @@ public static class Truugo
             }
 
             HttpResponseMessage response = await client.SendAsync(request, cancellationToken);
-            string responseContent = await response.Content.ReadAsStringAsync();
+            string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
             JObject responseJson = JObject.Parse(responseContent);
 
             if (!response.IsSuccessStatusCode)

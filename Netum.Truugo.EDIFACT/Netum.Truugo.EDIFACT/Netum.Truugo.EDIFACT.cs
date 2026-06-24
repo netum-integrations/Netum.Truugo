@@ -169,7 +169,7 @@ public static class Truugo
             request.Content = form;
 
             HttpResponseMessage response = await client.SendAsync(request, cancellationToken);
-            dynamic responseContent = await response.Content.ReadAsStringAsync();
+            dynamic responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
             JObject responseJson = JObject.Parse(responseContent);
 
             if (!response.IsSuccessStatusCode)
