@@ -11,7 +11,7 @@ internal abstract class TestBase
         DotEnv.Load();
         TruugoAPIUsername = GetEnvVar("TRUUGO_API_USERNAME");
         TruugoAPIPassword = GetEnvVar("TRUUGO_API_PASSWORD");
-        TestFileName = GetEnvVar("TEST_FILE_NAME");
+        TestFileName = GetEnvVar("EDIFACT_TEST_FILE_NAME");
     }
 
     protected string TruugoAPIPassword { get; set; }

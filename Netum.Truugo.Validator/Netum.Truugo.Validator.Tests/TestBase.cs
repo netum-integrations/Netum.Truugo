@@ -12,7 +12,7 @@ internal abstract class TestBase
         TruugoAPIUsername = GetEnvVar("TRUUGO_API_USERNAME");
         TruugoAPIPassword = GetEnvVar("TRUUGO_API_PASSWORD");
         TruugoAPIProfileKey = GetEnvVar("TRUUGO_API_PROFILE_KEY");
-        TestFileName = GetEnvVar("TEST_FILE_NAME");
+        TestFileName = GetEnvVar("VALIDATOR_TEST_FILE_NAME");
     }
 
     protected string TruugoAPIUsername { get; set; }

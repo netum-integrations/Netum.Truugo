@@ -14,7 +14,7 @@ internal abstract class TestBase
         TruugoAPIGroupKey = GetEnvVar("TRUUGO_API_GROUP_KEY");
         TruugoAPIItemKey = GetEnvVar("TRUUGO_API_ITEM_KEY");
         TruugoAPIFileKey = GetEnvVar("TRUUGO_API_FILE_KEY");
-        TestFileName = GetEnvVar("TEST_FILE_NAME");
+        TestFileName = GetEnvVar("SCHEMATRON_TEST_FILE_NAME");
     }
 
     protected string TruugoAPIUsername { get; set; }
