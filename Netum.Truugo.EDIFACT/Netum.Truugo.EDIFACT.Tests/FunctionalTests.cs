@@ -45,7 +45,7 @@ internal class FunctionalTests : TestBase
             Endpoint = EndpointPath.CheckSyntax,
             FileImportType = FileImport.FilePath,
             FilePath = pathToTestFile,
-            StorageTime = 2,
+            StorageTimeInHours = 2,
         };
 
         var result = await Truugo.EDIFACT(input, connection, options, CancellationToken.None);
@@ -63,7 +63,7 @@ internal class FunctionalTests : TestBase
         {
             Endpoint = EndpointPath.GetBrowser,
             FileImportType = FileImport.FileContent,
-            StorageTime = 1,
+            StorageTimeInHours = 1,
             FileName = "testfile.txt",
             Content = validContent,
         };
@@ -166,7 +166,6 @@ internal class FunctionalTests : TestBase
         var result = await Truugo.EDIFACT(input, connection, options, CancellationToken.None);
         TestContext.WriteLine($"SuccessfulRequestShouldHaveStatusCode200() response: {result.StatusCode}");
 
-        ClassicAssert.IsTrue(result.Success);
         Assert.That(result.Success, Is.True);
         Assert.That(result.StatusCode, Is.EqualTo(200));
     }

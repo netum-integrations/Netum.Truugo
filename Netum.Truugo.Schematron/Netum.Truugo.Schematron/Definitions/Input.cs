@@ -4,43 +4,6 @@ using System.ComponentModel.DataAnnotations;
 namespace Netum.Truugo.Schematron.Definitions;
 
 /// <summary>
-/// File import choices.
-/// </summary>
-public enum FileImport
-{
-    /// <summary>
-    /// Import file via file path
-    /// </summary>
-    FilePath,
-
-    /// <summary>
-    /// Import file via content
-    /// </summary>
-    FileContent,
-}
-
-/// <summary>
-/// Truugo API endpoint paths.
-/// </summary>
-public enum EndpointPath
-{
-    /// <summary>
-    /// List items endpoint
-    /// </summary>
-    ListItems,
-
-    /// <summary>
-    /// List item versions endpoint
-    /// </summary>
-    ListItemVersions,
-
-    /// <summary>
-    /// Validate endpoint
-    /// </summary>
-    Validate,
-}
-
-/// <summary>
 /// Input parameters for the API call.
 /// </summary>
 public class Input
@@ -97,7 +60,6 @@ public class Input
     /// <example>file.xml</example>
     [UIHint(nameof(FileImportType), "", FileImport.FileContent)]
     [DisplayFormat(DataFormatString = "Text")]
-    [DefaultValue("file.xml")]
     public string FileName { get; set; }
 
     /// <summary>

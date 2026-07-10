@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Netum.Truugo.EDIFACT.Definitions;
 using Netum.Truugo.EDIFACT.Helpers;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Netum.Truugo.EDIFACT;
@@ -42,6 +41,7 @@ public static class Truugo
                 case EndpointPath.CheckSyntax:
                     apiUrl = serverUrl + "/edifact/check-syntax";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -54,6 +54,7 @@ public static class Truugo
                 case EndpointPath.ToXML:
                     apiUrl = serverUrl + "/edifact/to-xml";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -66,6 +67,7 @@ public static class Truugo
                 case EndpointPath.ToJSON:
                     apiUrl = serverUrl + "/edifact/to-json";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -78,11 +80,12 @@ public static class Truugo
                 case EndpointPath.GetBrowser:
                     apiUrl = serverUrl + "/edifact/get-browser";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
                         method: HttpMethod.Post,
-                        storageTime: input.StorageTime,
+                        storageTime: input.StorageTimeInHours,
                         filePath: input.FilePath,
                         fileName: input.FileName,
                         fileContents: input.Content,
@@ -91,6 +94,7 @@ public static class Truugo
                 case EndpointPath.GetDocumentedSample:
                     apiUrl = serverUrl + "/edifact/get-documented-sample";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -103,6 +107,7 @@ public static class Truugo
                 default:
                     apiUrl = serverUrl + "/edifact/check-syntax";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -120,6 +125,7 @@ public static class Truugo
     }
 
     private static async Task<Result> HandleRequest(
+        EndpointPath endpoint,
         string url,
         string username,
         string password,
@@ -135,10 +141,10 @@ public static class Truugo
             string auth = $"{username}:{password}";
             string base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(auth));
 
-            HttpClient client = new HttpClient();
+            using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64);
 
-            var request = new HttpRequestMessage(method, url);
+            using var request = new HttpRequestMessage(method, url);
             var form = new MultipartFormDataContent();
 
             ByteArrayContent fileContent;
@@ -158,7 +164,7 @@ public static class Truugo
                 throw new ArgumentException("Missing file path or file contents.");
             }
 
-            if (url == "https://api.truugo.com/edifact/get-browser")
+            if (endpoint == EndpointPath.GetBrowser)
             {
                 if (storageTime <= 0 || storageTime > 24)
                     throw new ArgumentOutOfRangeException(nameof(storageTime), $"Storage time must be greater than 0 and less than or equal to 24. Provided value: {storageTime}");
@@ -169,16 +175,17 @@ public static class Truugo
             request.Content = form;
 
             HttpResponseMessage response = await client.SendAsync(request, cancellationToken);
-            dynamic responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            JObject responseJson = JObject.Parse(responseContent);
+            string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"API call failed with status code {response.StatusCode}: {responseContent}");
             }
 
+            JObject responseJson = JObject.Parse(responseContent);
+
             JArray decodedMessages = null;
-            if (url == "https://api.truugo.com/edifact/to-xml")
+            if (endpoint == EndpointPath.ToXML)
             {
                 var messages = responseJson["messages"] as JObject;
                 if (messages != null && messages.Count > 0)

@@ -12,22 +12,23 @@ on:
 
 jobs:
   build:
-    uses: FrendsPlatform/FrendsTasks/.github/workflows/linux_build_main.yml@main
-    with:
-      workdir: Netum.Truugo.Schematron
-      dotnet_version: 8.0.x
-      strict_analyzers: true
-      env_var_name_1: TRUUGO_API_USERNAME
-      env_var_name_2: TRUUGO_API_PASSWORD
-      env_var_name_3: TRUUGO_API_GROUP_KEY
-      env_var_name_4: TRUUGO_API_ITEM_KEY
-      env_var_name_5: TRUUGO_API_FILE_KEY
-      env_var_name_6: SCHEMATRON_TEST_FILE_NAME
-    secrets:
-      badge_service_api_key: ${{ secrets.BADGE_SERVICE_API_KEY }}
-      env_var_value_1: ${{ secrets.TRUUGO_API_USERNAME }}
-      env_var_value_2: ${{ secrets.TRUUGO_API_PASSWORD }}
-      env_var_value_3: ${{ secrets.TRUUGO_API_GROUP_KEY }}
-      env_var_value_4: ${{ secrets.TRUUGO_API_ITEM_KEY }}
-      env_var_value_5: ${{ secrets.TRUUGO_API_FILE_KEY }}
-      env_var_value_6: ${{ secrets.SCHEMATRON_TEST_FILE_NAME }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build
+        run: dotnet build
+        working-directory: Netum.Truugo.Schematron
+      - name: Test
+        run: dotnet test
+        working-directory: Netum.Truugo.Schematron
+        env:
+          TRUUGO_API_USERNAME: ${{ secrets.TRUUGO_API_USERNAME }}
+          TRUUGO_API_PASSWORD: ${{ secrets.TRUUGO_API_PASSWORD }}
+          TRUUGO_API_GROUP_KEY: ${{ secrets.TRUUGO_API_GROUP_KEY }}
+          TRUUGO_API_ITEM_KEY: ${{ secrets.TRUUGO_API_ITEM_KEY }}
+          TRUUGO_API_FILE_KEY: ${{ secrets.TRUUGO_API_FILE_KEY }}
+          SCHEMATRON_TEST_FILE_NAME: ${{ secrets.SCHEMATRON_TEST_FILE_NAME }}

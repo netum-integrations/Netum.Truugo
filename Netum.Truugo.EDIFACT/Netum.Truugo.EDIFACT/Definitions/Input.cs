@@ -1,58 +1,10 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Netum.Truugo.EDIFACT.Definitions;
 
 /// <summary>
-/// TODO: Add summary.
-/// </summary>
-public enum FileImport
-{
-    /// <summary>
-    /// Import file via file path
-    /// </summary>
-    FilePath,
-
-    /// <summary>
-    /// Import file via content
-    /// </summary>
-    FileContent,
-}
-
-/// <summary>
-/// TODO: Add summary.
-/// </summary>
-public enum EndpointPath
-{
-    /// <summary>
-    /// TODO: Add summary.
-    /// </summary>
-    CheckSyntax,
-
-    /// <summary>
-    /// TODO: Add summary.
-    /// </summary>
-    ToXML,
-
-    /// <summary>
-    /// TODO: Add summary.
-    /// </summary>
-    ToJSON,
-
-    /// <summary>
-    /// TODO: Add summary.
-    /// </summary>
-    GetBrowser,
-
-    /// <summary>
-    /// TODO: Add summary.
-    /// </summary>
-    GetDocumentedSample,
-}
-
-/// <summary>
-/// TODO: Add summary.
+/// Input parameters for the API call.
 /// </summary>
 public class Input
 {
@@ -71,12 +23,12 @@ public class Input
     public FileImport FileImportType { get; set; } = FileImport.FilePath;
 
     /// <summary>
-    /// get-browser API call can store the report for 1-24 hrs
+    /// GetBrowser API call can store the report for 1-24 hrs
     /// </summary>
     /// <example>2</example>
     [UIHint(nameof(Endpoint), "", EndpointPath.GetBrowser)]
     [DisplayName("Storage timespan")]
-    public int StorageTime { get; set; }
+    public int StorageTimeInHours { get; set; }
 
     /// <summary>
     /// Full path to the file
@@ -93,7 +45,6 @@ public class Input
     /// <example>document.edi</example>
     [UIHint(nameof(FileImportType), "", FileImport.FileContent)]
     [DisplayFormat(DataFormatString = "Text")]
-    [DefaultValue("file.txt")]
     public string FileName { get; set; }
 
     /// <summary>

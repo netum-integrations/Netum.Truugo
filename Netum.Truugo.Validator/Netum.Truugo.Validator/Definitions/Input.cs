@@ -4,68 +4,6 @@ using System.ComponentModel.DataAnnotations;
 namespace Netum.Truugo.Validator.Definitions;
 
 /// <summary>
-/// File import choices.
-/// </summary>
-public enum FileImport
-{
-    /// <summary>
-    /// Import file via file path
-    /// </summary>
-    FilePath,
-
-    /// <summary>
-    /// Import file via content
-    /// </summary>
-    FileContent,
-}
-
-/// <summary>
-/// Truugo API endpoint paths.
-/// </summary>
-public enum EndpointPath
-{
-    /// <summary>
-    /// Get status endpoint
-    /// </summary>
-    GetStatus,
-
-    /// <summary>
-    /// Store status for 30 days endpoint
-    /// </summary>
-    StoreStatus30d,
-
-    /// <summary>
-    /// Store status for 60 days endpoint
-    /// </summary>
-    StoreStatus60d,
-
-    /// <summary>
-    /// Get feedback endpoint
-    /// </summary>
-    GetFeedback,
-
-    /// <summary>
-    /// Get report endpoint
-    /// </summary>
-    GetReport,
-
-    /// <summary>
-    /// Store report for 7 days endpoint
-    /// </summary>
-    StoreReport7d,
-
-    /// <summary>
-    /// Store report for 14 days endpoint
-    /// </summary>
-    StoreReport14d,
-
-    /// <summary>
-    /// Store report for 30 days endpoint
-    /// </summary>
-    StoreReport30d,
-}
-
-/// <summary>
 /// Required and optional API parameters.
 /// </summary>
 public class Input
@@ -73,17 +11,13 @@ public class Input
     /// <summary>
     /// Path for the API call
     /// </summary>
-    /// <example>
-    /// EndpointPath.GetStatus
-    /// </example>
+    /// <example>EndpointPath.GetStatus</example>
     public EndpointPath Endpoint { get; set; } = EndpointPath.GetStatus;
 
     /// <summary>
     /// File import type selection: file path or content
     /// </summary>
-    /// <example>
-    /// FileImport.FilePath
-    /// </example>
+    /// <example>FileImport.FilePath</example>
     public FileImport FileImportType { get; set; } = FileImport.FilePath;
 
     /// <summary>
@@ -100,7 +34,6 @@ public class Input
     /// <example>report.xml</example>
     [UIHint(nameof(FileImportType), "", FileImport.FileContent)]
     [DisplayFormat(DataFormatString = "Text")]
-    [DefaultValue("file.xml")]
     public string FileName { get; set; }
 
     /// <summary>
@@ -109,7 +42,7 @@ public class Input
     /// <example>24</example>
     [UIHint(nameof(Endpoint), "", EndpointPath.GetReport)]
     [DefaultValue(24)]
-    public int StorageTime { get; set; } = 24;
+    public int StorageTimeInHours { get; set; } = 24;
 
     /// <summary>
     /// Optional instance name, can be used to override the file name in statistics.

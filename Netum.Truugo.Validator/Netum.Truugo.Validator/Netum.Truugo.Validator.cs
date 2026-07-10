@@ -42,6 +42,7 @@ public static class Truugo
                 case EndpointPath.GetStatus:
                     apiUrl = serverUrl + "/validator/get-status";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -55,6 +56,7 @@ public static class Truugo
                 case EndpointPath.StoreStatus30d:
                     apiUrl = serverUrl + "/validator/store-status-30-d";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -63,13 +65,14 @@ public static class Truugo
                         filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
-                        instance_name: input.InstanceName,
+                        instanceName: input.InstanceName,
                         tag: input.Tag,
                         cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreStatus60d:
                     apiUrl = serverUrl + "/validator/store-status-60-d";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -78,13 +81,14 @@ public static class Truugo
                         filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
-                        instance_name: input.InstanceName,
+                        instanceName: input.InstanceName,
                         tag: input.Tag,
                         cancellationToken: cancellationToken);
 
                 case EndpointPath.GetFeedback:
                     apiUrl = serverUrl + "/validator/get-feedback";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -93,29 +97,31 @@ public static class Truugo
                         filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
-                        instance_name: input.InstanceName,
-                        errors_only: input.ErrorsOnly,
+                        instanceName: input.InstanceName,
+                        errorsOnly: input.ErrorsOnly,
                         cancellationToken: cancellationToken);
 
                 case EndpointPath.GetReport:
                     apiUrl = serverUrl + "/validator/get-report";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
                         method: HttpMethod.Post,
                         key: connection.ProfileKey,
-                        storageTime: input.StorageTime,
+                        storageTime: input.StorageTimeInHours,
                         filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
-                        instance_name: input.InstanceName,
+                        instanceName: input.InstanceName,
                         tag: input.Tag,
                         cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreReport7d:
                     apiUrl = serverUrl + "/validator/store-report-7-d";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -124,13 +130,14 @@ public static class Truugo
                         filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
-                        instance_name: input.InstanceName,
+                        instanceName: input.InstanceName,
                         tag: input.Tag,
                         cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreReport14d:
                     apiUrl = serverUrl + "/validator/store-report-14-d";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -139,28 +146,30 @@ public static class Truugo
                         filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
                         fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
-                        instance_name: input.InstanceName,
+                        instanceName: input.InstanceName,
                         tag: input.Tag,
                         cancellationToken: cancellationToken);
 
                 case EndpointPath.StoreReport30d:
                     apiUrl = serverUrl + "/validator/store-report-30-d";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
                         method: HttpMethod.Post,
                         key: connection.ProfileKey,
-                        filePath: input.FilePath,
+                        filePath: input.FileImportType == FileImport.FileContent ? null : input.FilePath,
                         fileName: input.FileName,
-                        fileContents: input.Content,
-                        instance_name: input.InstanceName,
+                        fileContents: input.FileImportType == FileImport.FilePath ? null : input.Content,
+                        instanceName: input.InstanceName,
                         tag: input.Tag,
                         cancellationToken: cancellationToken);
 
                 default:
                     apiUrl = serverUrl + "/validator/get-status";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -179,6 +188,7 @@ public static class Truugo
     }
 
     private static async Task<Result> HandleRequest(
+        EndpointPath endpoint,
         string url,
         string username,
         string password,
@@ -188,9 +198,9 @@ public static class Truugo
         string filePath = null,
         string fileName = null,
         string fileContents = null,
-        string instance_name = null,
+        string instanceName = null,
         string tag = null,
-        bool errors_only = false,
+        bool errorsOnly = false,
         CancellationToken cancellationToken = default)
     {
         try
@@ -201,7 +211,7 @@ public static class Truugo
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64);
 
-            var request = new HttpRequestMessage(method, url);
+            using var request = new HttpRequestMessage(method, url);
 
             if (!string.IsNullOrEmpty(key))
             {
@@ -213,30 +223,24 @@ public static class Truugo
                 {
                     fileContent = new ByteArrayContent(File.ReadAllBytes(filePath));
                     form.Add(fileContent, "instance", System.IO.Path.GetFileName(filePath));
-
-                    // Optionals
-                    if (!string.IsNullOrEmpty(instance_name))
-                        form.Add(new StringContent(instance_name), "instance_name");
-                    if (!string.IsNullOrEmpty(tag))
-                        form.Add(new StringContent(tag), "tag");
                 }
                 else if (!string.IsNullOrEmpty(fileContents))
                 {
                     fileContent = new ByteArrayContent(Encoding.UTF8.GetBytes(fileContents));
                     form.Add(fileContent, "instance", fileName);
-
-                    // Optionals
-                    if (!string.IsNullOrEmpty(instance_name))
-                        form.Add(new StringContent(instance_name), "instance_name");
-                    if (!string.IsNullOrEmpty(tag))
-                        form.Add(new StringContent(tag), "tag");
                 }
                 else
                 {
                     throw new ArgumentException("Missing file path or file contents.");
                 }
 
-                if (url == "https://api.truugo.com/validator/get-report")
+                // Optionals
+                if (!string.IsNullOrEmpty(instanceName))
+                    form.Add(new StringContent(instanceName), "instance_name");
+                if (!string.IsNullOrEmpty(tag))
+                    form.Add(new StringContent(tag), "tag");
+
+                if (endpoint == EndpointPath.GetReport)
                 {
                     if (storageTime <= 0 || storageTime > 24)
                         throw new ArgumentOutOfRangeException(nameof(storageTime), $"Storage time must be greater than 0 and less than or equal to 24. Provided value: {storageTime}");
@@ -244,7 +248,7 @@ public static class Truugo
                     form.Add(new StringContent(storageTime.ToString()), "storage_timespan");
                 }
 
-                if (errors_only == true)
+                if (errorsOnly == true)
                     form.Add(new StringContent("1"), "errors_only");
                 else
                     form.Add(new StringContent("0"), "errors_only");
@@ -254,12 +258,13 @@ public static class Truugo
 
             HttpResponseMessage response = await client.SendAsync(request, cancellationToken);
             string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            JObject responseJson = JObject.Parse(responseContent);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"API call failed with status code {response.StatusCode}: {responseContent}");
             }
+
+            JObject responseJson = JObject.Parse(responseContent);
 
             return new Result
             {

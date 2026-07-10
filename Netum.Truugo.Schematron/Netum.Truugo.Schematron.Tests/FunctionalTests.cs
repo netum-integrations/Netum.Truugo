@@ -204,7 +204,6 @@ internal class FunctionalTests : TestBase
         var result = await Truugo.Schematron(input, connection, options, CancellationToken.None);
         TestContext.WriteLine($"SuccessfulRequestShouldHaveStatusCode200() status code: {result.StatusCode}");
 
-        ClassicAssert.IsTrue(result.Success);
         Assert.That(result.Success, Is.True);
         Assert.That(result.StatusCode, Is.EqualTo(200));
     }

@@ -2,8 +2,7 @@
 
 Task for calling Truugo Schematron API endpoints. You can refer to Truugo API Swagger here: https://api.truugo.com/reference/. Please note that in order to use this task, you need Truugo API Credentials.
 
-[![Schematron_build](https://github.com/FrendsPlatform/Netum.Truugo/actions/workflows/Schematron_test_on_main.yml/badge.svg)](https://github.com/FrendsPlatform/Netum.Truugo/actions/workflows/Schematron_test_on_main.yml)
-![Coverage](https://app-github-custom-badges.azurewebsites.net/Badge?key=FrendsPlatform/Netum.Truugo/Netum.Truugo.Schematron|main)
+[![Schematron_build](https://github.com/netum-integrations/Netum.Truugo/actions/workflows/Schematron_test_on_main.yml/badge.svg)](https://github.com/netum-integrations/Netum.Truugo/actions/workflows/Schematron_test_on_main.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ## Installing
@@ -14,7 +13,7 @@ You can install the Task via Frends UI Task View.
 
 ### Clone a copy of the repository
 
-`git clone https://github.com/FrendsPlatform/Netum.Truugo.git`
+`git clone https://github.com/netum-integrations/Netum.Truugo.git`
 
 ### Build the project
 

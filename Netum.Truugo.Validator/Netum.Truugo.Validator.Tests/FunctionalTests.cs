@@ -147,7 +147,7 @@ internal class FunctionalTests : TestBase
             FileImportType = FileImport.FileContent,
             FileName = "testfile.txt",
             Content = validContent,
-            StorageTime = 5,
+            StorageTimeInHours = 5,
         };
 
         var result = await Truugo.Validator(input, connection, options, CancellationToken.None);
@@ -158,12 +158,12 @@ internal class FunctionalTests : TestBase
 
         var metaExpiry = DateTimeOffset.Parse(result.Data["metaExpiry"].ToString());
         var fileExpiry = DateTimeOffset.Parse(result.Data["fileExpiry"].ToString());
-        var expectedExpiry = metaExpiry.AddHours(input.StorageTime);
+        var expectedExpiry = metaExpiry.AddHours(input.StorageTimeInHours);
 
         Assert.That(
-            expectedExpiry.TimeOfDay,
-            Is.EqualTo(fileExpiry.TimeOfDay),
-            $"Expected fileExpiry time-of-day to be ~{fileExpiry.TimeOfDay:hh\\:mm\\:ss}, but was {expectedExpiry.TimeOfDay:hh\\:mm\\:ss}");
+            fileExpiry.TimeOfDay,
+            Is.EqualTo(expectedExpiry.TimeOfDay),
+            $"Expected fileExpiry time-of-day to be ~{expectedExpiry.TimeOfDay:hh\\:mm\\:ss}, but was {fileExpiry.TimeOfDay:hh\\:mm\\:ss}");
     }
 
     [Test]
@@ -175,7 +175,7 @@ internal class FunctionalTests : TestBase
             FileImportType = FileImport.FileContent,
             FileName = "testfile.txt",
             Content = validContent,
-            StorageTime = 25, // Invalid storage time, should be between 1 and 24
+            StorageTimeInHours = 25, // Invalid storage time, should be between 1 and 24
         };
 
         var options = new Options
@@ -189,7 +189,7 @@ internal class FunctionalTests : TestBase
 
         Assert.That(result.Success, Is.False);
         Assert.That(result.Error, Is.Not.Null);
-        Assert.That(input.StorageTime, Is.TypeOf<int>());
+        Assert.That(input.StorageTimeInHours, Is.TypeOf<int>());
         Assert.That(result.Error.Message, Does.Contain("Storage time must be greater than 0 and less than or equal to 24").IgnoreCase);
     }
 

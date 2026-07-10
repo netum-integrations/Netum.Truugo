@@ -63,19 +63,20 @@ public static class Truugo
             string auth = $"{username}:{password}";
             string base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(auth));
 
-            using HttpClient client = new HttpClient();
+            using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64);
 
-            var request = new HttpRequestMessage(method, url);
+            using var request = new HttpRequestMessage(method, url);
 
             HttpResponseMessage response = await client.SendAsync(request, cancellationToken);
             string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            JObject responseJson = JObject.Parse(responseContent);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"API call failed with status code {response.StatusCode}: {responseContent}");
             }
+
+            JObject responseJson = JObject.Parse(responseContent);
 
             // Parse API response to extract profile keys and full profile objects
             var profiles = new List<Profile>();
@@ -89,8 +90,6 @@ public static class Truugo
                         doc.RootElement.TryGetProperty("profiles", out JsonElement profilesArray) &&
                         profilesArray.ValueKind == JsonValueKind.Array)
                     {
-                        var profilesJson = responseJson["profiles"] as JArray ?? new JArray();
-                        int index = 0;
                         foreach (JsonElement profile in profilesArray.EnumerateArray())
                         {
                             if (profile.TryGetProperty("profile_key", out JsonElement keyElement))
@@ -104,8 +103,6 @@ public static class Truugo
                                     });
                                 }
                             }
-
-                            index++;
                         }
                     }
                 }

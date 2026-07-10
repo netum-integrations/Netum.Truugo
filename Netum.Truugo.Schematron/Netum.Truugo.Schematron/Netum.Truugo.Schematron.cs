@@ -40,6 +40,7 @@ public static class Truugo
                 case EndpointPath.ListItems:
                     apiUrl = serverUrl + $"/schematron/list-items?group_key={input.GroupKey}";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -49,6 +50,7 @@ public static class Truugo
                 case EndpointPath.ListItemVersions:
                     apiUrl = serverUrl + $"/schematron/list-item-versions?item_key={input.ItemKey}";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -58,6 +60,7 @@ public static class Truugo
                 case EndpointPath.Validate:
                     apiUrl = serverUrl + "/schematron/validate";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -71,6 +74,7 @@ public static class Truugo
                 default:
                     apiUrl = serverUrl + $"/schematron/list-items?group_key={input.GroupKey}";
                     return await HandleRequest(
+                        endpoint: input.Endpoint,
                         url: apiUrl,
                         username: connection.Username,
                         password: connection.Password,
@@ -85,6 +89,7 @@ public static class Truugo
     }
 
     private static async Task<Result> HandleRequest(
+        EndpointPath endpoint,
         string url,
         string username,
         string password,
@@ -100,15 +105,17 @@ public static class Truugo
             string auth = $"{username}:{password}";
             string base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(auth));
 
-            var client = new HttpClient();
+            using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64);
 
-            var request = new HttpRequestMessage(method, url);
-            var form = new MultipartFormDataContent();
+            using var request = new HttpRequestMessage(method, url);
 
             if (method == HttpMethod.Post && !string.IsNullOrEmpty(fileKey))
             {
-                form.Add(new StringContent(fileKey), "file_key");
+                var form = new MultipartFormDataContent
+                {
+                    { new StringContent(fileKey), "file_key" },
+                };
 
                 if (!string.IsNullOrEmpty(filePath))
                 {
@@ -129,16 +136,17 @@ public static class Truugo
             }
 
             HttpResponseMessage response = await client.SendAsync(request, cancellationToken);
-            dynamic responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            JObject responseJson = JObject.Parse(responseContent);
+            string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"API call failed with status code {response.StatusCode}: {responseContent}");
             }
 
+            JObject responseJson = JObject.Parse(responseContent);
+
             string decodedContent = null;
-            if (url == "https://api.truugo.com/schematron/validate")
+            if (endpoint == EndpointPath.Validate)
             {
                 var encodedContent = responseJson["svrl"]?.Value<string>();
                 if (!string.IsNullOrEmpty(encodedContent))
