@@ -1,6 +1,7 @@
 name: Schematron_release
+
 permissions:
-  contents: read
+  contents: write
 
 on:
   workflow_dispatch:
@@ -10,13 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+
       - name: Build
-        run: dotnet build
+        run: dotnet build --configuration Release
         working-directory: Netum.Truugo.Schematron
+
       - name: Test
         run: dotnet test
         working-directory: Netum.Truugo.Schematron
@@ -27,3 +31,28 @@ jobs:
           TRUUGO_API_ITEM_KEY: ${{ secrets.TRUUGO_API_ITEM_KEY }}
           TRUUGO_API_FILE_KEY: ${{ secrets.TRUUGO_API_FILE_KEY }}
           SCHEMATRON_TEST_FILE_NAME: ${{ secrets.SCHEMATRON_TEST_FILE_NAME }}
+
+      - name: Extract version from .csproj
+        id: read_version
+        run: |
+          VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Netum.Truugo.Schematron/Netum.Truugo.Schematron.csproj)
+          if [ -z "$VERSION" ]; then
+            echo "::error::Didnt find <Version> in Netum.Truugo.Schematron.csproj"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --output ./artifacts
+        working-directory: Netum.Truugo.Schematron
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.read_version.outputs.version }}
+          name: Release v${{ steps.read_version.outputs.version }}
+          draft: false
+          prerelease: false
+          files: Netum.Truugo.Schematron/artifacts/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

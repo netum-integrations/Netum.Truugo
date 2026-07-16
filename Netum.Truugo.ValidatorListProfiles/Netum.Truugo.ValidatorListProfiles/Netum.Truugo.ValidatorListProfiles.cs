@@ -21,7 +21,7 @@ public static class Truugo
 {
     /// <summary>
     /// Truugo API Validator list-profiles endpoint
-    /// [Documentation](https://tasks.frends.com/tasks/frends-tasks/Frends-TruugoValidator-ListProfiles)
+    /// [Documentation](https://tasks.frends.com/tasks/frends-tasks/Frends-Truugo-ValidatorListProfiles)
     /// </summary>
     /// <param name="connection">Connection parameters.</param>
     /// <param name="options">Additional error handling parameters.</param>

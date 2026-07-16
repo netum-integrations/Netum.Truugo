@@ -19,8 +19,8 @@ namespace Netum.Truugo.EDIFACT;
 public static class Truugo
 {
     /// <summary>
-    /// TruugoEDIFACT task for calling EDIFACT API endpoints. Depending on the selected endpoint, different parameters are required. Truugo API Swagger for reference: https://api.truugo.com/reference/
-    /// [Documentation](https://tasks.frends.com/tasks/frends-tasks/Frends-TruugoEDIFACT-EDIFACT)
+    /// Truugo EDIFACT task for calling EDIFACT API endpoints. Depending on the selected endpoint, different parameters are required. Truugo API Swagger for reference: https://api.truugo.com/reference/
+    /// [Documentation](https://tasks.frends.com/tasks/frends-tasks/Frends-Truugo-EDIFACT)
     /// </summary>
     /// <param name="input">Input parameters for API.</param>
     /// <param name="connection">Connection parameters.</param>

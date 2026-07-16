@@ -26,7 +26,7 @@ public class Result
     /// <summary>
     /// Endpoint used in the API call
     /// </summary>
-    /// <example>GetStatus</example>
+    /// <example>https://api.truugo.com/validator/get-status</example>
     public string Endpoint { get; set; }
 
     /// <summary>
