@@ -1,0 +1,55 @@
+name: EDIFACT_release
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build
+        run: dotnet build --configuration Release
+        working-directory: Netum.Truugo.EDIFACT
+
+      - name: Test
+        run: dotnet test
+        working-directory: Netum.Truugo.EDIFACT
+        env:
+          TRUUGO_API_USERNAME: ${{ secrets.TRUUGO_API_USERNAME }}
+          TRUUGO_API_PASSWORD: ${{ secrets.TRUUGO_API_PASSWORD }}
+          EDIFACT_TEST_FILE_NAME: ${{ secrets.EDIFACT_TEST_FILE_NAME }}
+
+      - name: Extract version from .csproj
+        id: read_version
+        run: |
+          VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Netum.Truugo.EDIFACT/Netum.Truugo.EDIFACT.csproj)
+          if [ -z "$VERSION" ]; then
+            echo "::error::Didnt find <Version> in Netum.Truugo.EDIFACT.csproj"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --output ./artifacts
+        working-directory: Netum.Truugo.EDIFACT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.read_version.outputs.version }}
+          name: Release v${{ steps.read_version.outputs.version }}
+          draft: false
+          prerelease: false
+          files: Netum.Truugo.EDIFACT/artifacts/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

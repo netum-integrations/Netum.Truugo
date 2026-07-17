@@ -1,0 +1,39 @@
+# Netum.Truugo.Validator
+
+Task for calling Truugo Validator API endpoints. You can refer to Truugo API Swagger here: https://api.truugo.com/reference/. Please note that in order to use this task, you need Truugo API Credentials.
+
+[![Validator_build](https://github.com/netum-integrations/Netum.Truugo/actions/workflows/Validator_test_on_main.yml/badge.svg)](https://github.com/netum-integrations/Netum.Truugo/actions/workflows/Validator_test_on_main.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+## Installing
+
+You can install the Task via Frends UI Task View.
+
+## Building
+
+### Clone a copy of the repository
+
+`git clone https://github.com/netum-integrations/Netum.Truugo.git`
+
+### Build the project
+
+`dotnet build`
+
+### Run tests
+
+Before running tests you must add a valid file to TestFiles-folder matching your profile key (eg. Finvoice, TEAPPS) and specify the file in .env. Add your Truugo API credentials to the .env file.
+
+Run the tests
+
+`dotnet test`
+
+Get unit test coverage
+
+`dotnet test --collect:"XPlat Code Coverage"`
+
+### Create a NuGet package
+
+`dotnet pack --configuration Release`
+
+### StyleCop.Analyzers Version
+This project uses StyleCop.Analyzers 1.2.0-beta.556, as recommended by the author, to get the latest fixes and improvements not available in the last stable release.
