@@ -31,7 +31,7 @@ jobs:
       - name: Extract version from .csproj
         id: read_version
         run: |
-          VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Netum.Truugo.ValidatorListProfiles/Netum.Truugo.ValidatorListProfiles.csproj)
+          VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Netum.Truugo.ValidatorListProfiles/Netum.Truugo.ValidatorListProfiles/Netum.Truugo.ValidatorListProfiles.csproj)
           if [ -z "$VERSION" ]; then
             echo "::error::Didnt find <Version> in Netum.Truugo.ValidatorListProfiles.csproj"
             exit 1
