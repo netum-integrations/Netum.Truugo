@@ -35,7 +35,7 @@ jobs:
       - name: Extract version from .csproj
         id: read_version
         run: |
-          VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Netum.Truugo.Schematron/Netum.Truugo.Schematron.csproj)
+          VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Netum.Truugo.Schematron/Netum.Truugo.Schematron/Netum.Truugo.Schematron.csproj)
           if [ -z "$VERSION" ]; then
             echo "::error::Didnt find <Version> in Netum.Truugo.Schematron.csproj"
             exit 1
